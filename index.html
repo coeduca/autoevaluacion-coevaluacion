@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Auto y Coevaluación</title>
+<meta name="description" content="Autoevaluación y coevaluación del estudiante — Complejo Educativo Cantón Las Ánimas">
+<link rel="icon" type="image/png" href="favicon.webp">
+<link rel="apple-touch-icon" href="favicon.webp">
+
+<!-- Tailwind CSS vía CDN (solo utilidades de layout; los colores y componentes
+     propios del look "Material 3 / Jetpack Compose" viven en css/styles.css) -->
+<script src="https://cdn.tailwindcss.com"></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<div class="bg-blobs"><span></span><span></span><span></span></div>
+
+<div class="app-shell dashboard">
+
+  <!-- ==================== BARRA LATERAL ==================== -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <img src="logo.png" alt="Logo institucional" class="sidebar-brand-logo" onerror="this.style.display='none'">
+      <div class="min-w-0">
+        <p class="sidebar-brand-title">Auto y Coevaluación</p>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <button type="button" class="nav-item active" data-nav-item="home">
+        <img src="diana-azul.webp" alt="" class="nav-item-icon">
+        <span>Inicio</span>
+      </button>
+      <button type="button" class="nav-item" data-nav-item="autoeval">
+        <img src="autoevaluacion.webp" alt="" class="nav-item-icon">
+        <span>Autoevaluación</span>
+      </button>
+      <button type="button" class="nav-item" data-nav-item="coeval">
+        <img src="Coevaluacion.webp" alt="" class="nav-item-icon">
+        <span>Coevaluación</span>
+      </button>
+      <button type="button" class="nav-item" data-nav-item="info">
+        <span class="nav-item-glyph">ⓘ</span>
+        <span>Información</span>
+      </button>
+    </nav>
+
+    <blockquote class="quote-card">
+      <span class="quote-mark" aria-hidden="true">“</span>
+      <p class="quote-text">La evaluación no es el final,<br>es el comienzo de tu mejora.</p>
+    </blockquote>
+  </aside>
+
+  <!-- Velo para cerrar el sidebar en móvil -->
+  <div class="sidebar-backdrop" id="sidebar-backdrop"></div>
+
+  <!-- ==================== COLUMNA PRINCIPAL ==================== -->
+  <div class="main-col">
+
+    <header class="topbar">
+      <button type="button" class="topbar-menu-btn" id="menu-btn" aria-label="Abrir menú">☰</button>
+      <div class="min-w-0 topbar-heading">
+        <h1 class="topbar-title">Panel de evaluación</h1>
+        <p class="topbar-subtitle">Complejo Educativo Cantón Las Ánimas</p>
+      </div>
+      <div class="user-chip">
+        <div class="min-w-0 user-chip-text">
+          <p class="user-chip-name">Prof. Eliseo Martínez</p>
+          <p class="user-chip-email">jose.eliseo.martinez@clases.edu.sv</p>
+        </div>
+        <div class="user-chip-avatar">EM</div>
+      </div>
+    </header>
+
+    <!-- Ilustración decorativa (pila de libros), fondo superior derecho -->
+    <img src="pila-de-libros.webp" alt="" class="deco-books" aria-hidden="true">
+
+    <main class="content-area">
+
+    <!-- ==================== VISTA: INICIO ==================== -->
+    <div data-view="home" hidden class="space-y-6">
+      <div class="pt-2">
+        <h2 id="home-greeting" class="font-display text-2xl font-semibold"></h2>
+        <p id="home-grado" class="text-sm mt-1" style="color:var(--md-on-surface-variant)"></p>
+      </div>
+
+      <div class="grid gap-4 sm:grid-cols-2">
+        <button type="button" id="card-autoeval" class="option-card">
+          <div class="flex items-start justify-between w-full gap-2">
+            <div class="option-card-icon"><img src="autoevaluacion.webp" alt=""></div>
+            <span class="status-chip pendiente">Elegir materia →</span>
+          </div>
+          <div>
+            <p class="option-card-title">Autoevaluación</p>
+            <p class="option-card-desc">Elige la materia y reflexiona con honestidad sobre tu propio desempeño.</p>
+          </div>
+        </button>
+
+        <div id="card-coeval" class="option-card locked">
+          <div class="flex items-start justify-between w-full gap-2">
+            <div class="option-card-icon"><img src="Coevaluacion.webp" alt=""></div>
+          </div>
+          <div>
+            <p class="option-card-title">Coevaluación</p>
+            <p class="option-card-desc">Se activa automáticamente después de tu autoevaluación de cada materia.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-hint">
+        <img src="estadisticas.webp" alt="" class="info-hint-icon">
+        <div>
+          <p class="info-hint-title">¿Cómo funciona?</p>
+          <p class="info-hint-desc">Completa primero tu autoevaluación de una materia; luego se habilita la coevaluación de un compañero(a). Al terminar se descarga tu PDF para subirlo a Classroom.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== VISTA: AUTOEVALUACIÓN ==================== -->
+    <div data-view="autoeval" hidden class="space-y-5">
+      <div class="flex items-center justify-between">
+        <button type="button" data-nav="home" class="btn-text" style="padding:.4rem .2rem;">← Inicio</button>
+        <span id="autoeval-header-label" class="text-xs font-semibold uppercase" style="letter-spacing:.05em; color:var(--md-on-surface-variant)"></span>
+      </div>
+
+      <p id="autoeval-instrucciones" class="instrucciones-banner"></p>
+
+      <div class="m3-progress-track"><div id="autoeval-progress-fill" class="m3-progress-fill" style="width:0%"></div></div>
+
+      <div id="autoeval-criterios" class="space-y-4"></div>
+
+      <div class="criterio-card space-y-2">
+        <label id="autoeval-reflexion-label" for="autoeval-reflexion" class="criterio-titulo block"></label>
+        <textarea id="autoeval-reflexion" class="m3-field" rows="3"></textarea>
+      </div>
+
+      <p id="autoeval-error" class="field-error text-center" hidden></p>
+
+      <div class="sticky-footer">
+        <button type="button" id="btn-autoeval-submit" class="btn btn-filled btn-cta btn-block" disabled>Marcar como completada y continuar →</button>
+      </div>
+    </div>
+
+    <!-- ==================== VISTA: COEVALUACIÓN ==================== -->
+    <div data-view="coeval" hidden class="space-y-5">
+      <div class="flex items-center justify-between">
+        <button type="button" data-nav="home" class="btn-text" style="padding:.4rem .2rem;">← Inicio</button>
+        <span id="coeval-header-label" class="text-xs font-semibold uppercase" style="letter-spacing:.05em; color:var(--md-on-surface-variant)"></span>
+      </div>
+
+      <div id="coeval-no-partner" class="m3-card p-6 text-center" hidden>
+        <p style="color:var(--md-on-surface-variant)">No se encontró un compañero(a) para asignarte en este momento. Avísale a tu docente.</p>
+      </div>
+
+      <div id="coeval-body" class="space-y-5">
+        <p id="coeval-instrucciones" class="instrucciones-banner"></p>
+
+        <div class="partner-banner">
+          <div id="coeval-partner-avatar" class="partner-avatar"></div>
+          <div class="min-w-0">
+            <p class="text-xs" style="color:var(--md-on-primary-container); opacity:.8;">Vas a coevaluar a:</p>
+            <p id="coeval-partner-name" class="font-display font-semibold text-lg truncate" style="color:var(--md-on-primary-container)"></p>
+          </div>
+        </div>
+
+        <div class="m3-progress-track"><div id="coeval-progress-fill" class="m3-progress-fill" style="width:0%"></div></div>
+
+        <div id="coeval-criterios" class="space-y-4"></div>
+
+        <div class="criterio-card space-y-2">
+          <label id="coeval-comentario-label" for="coeval-comentario" class="criterio-titulo block"></label>
+          <textarea id="coeval-comentario" class="m3-field" rows="3"></textarea>
+        </div>
+
+        <p id="coeval-error" class="field-error text-center" hidden></p>
+
+        <div class="sticky-footer">
+          <button type="button" id="btn-coeval-submit" class="btn btn-filled btn-cta btn-block" disabled>Marcar como completada y descargar ⬇</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== VISTA: FINAL ==================== -->
+    <div data-view="final" hidden class="space-y-6 text-center pt-4">
+      <div class="done-badge">🎉</div>
+      <div>
+        <h2 class="font-display text-2xl font-semibold" style="color:var(--md-on-primary-container)">¡Listo!</h2>
+        <p class="text-sm mt-1" style="color:var(--md-on-surface-variant)">Tu autoevaluación y coevaluación quedaron registradas. El PDF se descargó automáticamente — súbelo a Classroom.</p>
+      </div>
+
+      <div class="grid grid-cols-2 gap-3 max-w-md mx-auto">
+        <div class="score-tile final">
+          <p id="final-nota-autoeval" class="score-tile-value">0.0</p>
+          <p class="score-tile-label">Tu autoevaluación</p>
+        </div>
+        <div class="score-tile final">
+          <p id="final-nota-coeval" class="score-tile-value">0.0</p>
+          <p id="final-coeval-label" class="score-tile-label">Coevaluación para —</p>
+        </div>
+      </div>
+      <p class="text-xs" style="color:var(--md-on-surface-variant)">Cada nota es sobre 10 y pertenece a un estudiante distinto: la primera es tuya; la segunda es de tu compañero(a) evaluado — quedó en la 2.ª página del PDF.</p>
+
+      <div class="flex flex-col sm:flex-row gap-3 justify-center pt-2">
+        <button type="button" id="btn-download-again" class="btn btn-filled">Descargar de nuevo</button>
+        <button type="button" data-nav="home" class="btn btn-outlined">Volver al inicio</button>
+      </div>
+    </div>
+
+    </main>
+
+  </div>
+</div>
+
+<!-- ==================== MODAL: INGRESO DE NIE ==================== -->
+<div id="nie-modal" class="m3-scrim">
+  <div class="m3-dialog">
+    <div class="done-badge" style="width:4rem;height:4rem;font-size:1.8rem;">👋</div>
+    <h2 class="font-display text-xl font-semibold mt-4" style="color:var(--md-on-primary-container)">¡Bienvenido(a)!</h2>
+    <p class="text-sm mt-1 mb-5" style="color:var(--md-on-surface-variant)">Ingresa tu NIE para comenzar tu autoevaluación y coevaluación.</p>
+    <form id="nie-form" class="space-y-3">
+      <label for="nie-input" class="sr-only">Tu NIE</label>
+      <input id="nie-input" type="text" inputmode="numeric" autocomplete="off" class="m3-field text-center" placeholder="Tu NIE" required>
+      <p id="nie-error" class="field-error" hidden></p>
+      <button type="submit" class="btn btn-filled btn-block">Continuar</button>
+    </form>
+  </div>
+</div>
+
+<!-- ==================== MODAL: SELECCIÓN DE MATERIA ==================== -->
+<div id="materia-modal" class="m3-scrim" hidden>
+  <div class="m3-dialog" style="text-align:left;">
+    <button type="button" id="materia-modal-close" class="modal-close-btn" aria-label="Cerrar">✕</button>
+    <h2 class="font-display text-xl font-semibold" style="color:var(--md-on-primary-container)">¿Qué materia vas a evaluar?</h2>
+    <p class="text-sm mt-1 mb-4" style="color:var(--md-on-surface-variant)">La autoevaluación y la coevaluación se completan por separado para cada materia.</p>
+    <div id="materia-list" class="space-y-2.5"></div>
+  </div>
+</div>
+
+<!-- ==================== MODAL: INFORMACIÓN ==================== -->
+<div id="info-modal" class="m3-scrim" hidden>
+  <div class="m3-dialog info-dialog" style="text-align:left;">
+    <button type="button" id="info-modal-close" class="modal-close-btn" aria-label="Cerrar">✕</button>
+    <div class="info-dialog-head">
+      <span class="info-dialog-glyph">ⓘ</span>
+      <h2 class="font-display text-xl font-semibold" style="color:var(--md-on-primary-container)">¿Qué son y para qué sirven?</h2>
+    </div>
+    <p class="info-dialog-intro">El <strong>Manual de Evaluación al Servicio del Aprendizaje y Desarrollo</strong> define ambas prácticas como tipos de evaluación interna que fomentan la reflexión crítica:</p>
+
+    <div class="info-term">
+      <div class="info-term-icon"><img src="autoevaluacion.webp" alt=""></div>
+      <div>
+        <p class="info-term-title">Autoevaluación</p>
+        <p class="info-term-text">Es una reflexión en la que el estudiante valora sus propios aprendizajes y emite juicios de valor sobre sí mismo basándose en criterios e indicadores establecidos. Su propósito es estimular la retroalimentación constante y contribuir a la autonomía del estudiante.</p>
+      </div>
+    </div>
+
+    <div class="info-term">
+      <div class="info-term-icon"><img src="Coevaluacion.webp" alt=""></div>
+      <div>
+        <p class="info-term-title">Coevaluación</p>
+        <p class="info-term-text">Es la valoración del desempeño de un estudiante por parte de sus propios compañeros, en la cual también puede participar el docente. Su propósito es identificar logros personales y grupales, fomentar la crítica constructiva, ofrecer la oportunidad de opinar sobre la actuación en grupo y desarrollar actitudes de integración.</p>
+      </div>
+    </div>
+
+    <button type="button" id="info-modal-ok" class="btn btn-filled btn-block" style="margin-top:.5rem;">Entendido</button>
+  </div>
+</div>
+
+<!-- pdfmake: generación de PDF en el navegador -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+
+<script src="js/students.js"></script>
+<script src="js/config.js"></script>
+<script src="js/preguntas.js"></script>
+<script src="js/pairing.js"></script>
+<script src="js/pdfGenerator.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
