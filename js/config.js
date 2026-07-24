@@ -8,6 +8,8 @@
 // =========================================================
 window.CONFIG = (function () {
   const params = new URLSearchParams(location.search);
+  const anio = params.get('anio') || String(new Date().getFullYear());
+  const periodo = params.get('periodo') || '';
 
   return {
     institucion: 'Complejo Educativo Cantón Las Ánimas',
@@ -15,8 +17,17 @@ window.CONFIG = (function () {
     ubicacion: 'San Lorenzo, San Vicente',
     docente: 'José Eliseo Martínez Rodríguez',
 
-    periodo: params.get('periodo') || '',
-    anio: params.get('anio') || String(new Date().getFullYear()),
+    periodo,
+    anio,
+
+    // Los datos se separan por ciclo. Al cambiar `periodo` (en este archivo o
+    // en la URL), el nuevo grupo comienza en blanco sin mostrar respuestas del
+    // periodo anterior. También puede usarse ?evaluacion=2026-P2.
+    evaluacionId: params.get('evaluacion') || `${anio}-${periodo || 'periodo-general'}`,
+
+    // Los registros que no se han actualizado durante este tiempo se eliminan
+    // automáticamente del navegador.
+    retencionDias: 90,
   };
 })();
 

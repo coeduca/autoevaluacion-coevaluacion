@@ -165,7 +165,10 @@ function pdfNotaDestacada(titulo, nota, deQuien) {
   };
 }
 
-function generarPdfEvaluacion(student, nie, materia, record, logoBase64, config) {
+function crearPdfEvaluacion(student, nie, materia, record, logoBase64, config) {
+  if (!window.pdfMake) {
+    throw new Error('El generador de PDF no está disponible. Comprueba tu conexión e inténtalo de nuevo.');
+  }
   const notas = window.calcularNotas(record.autoeval, record.coeval);
   const fechaEmision = pdfFechaHoyLarga();
   const partnerNie = record.coeval.companeroNie;
@@ -250,7 +253,36 @@ function generarPdfEvaluacion(student, nie, materia, record, logoBase64, config)
   };
 
   const filename = `${pdfSanitizeFilename(materia)}_Autoeval_Coeval_${pdfSanitizeFilename(nie)}_${pdfSanitizeFilename(student.name)}.pdf`;
-  pdfMake.createPdf(docDefinition).download(filename);
+  return {
+    documento: pdfMake.createPdf(docDefinition),
+    filename,
+  };
 }
 
-window.EvalPDF = { generar: generarPdfEvaluacion };
+function generarPdfEvaluacion(student, nie, materia, record, logoBase64, config) {
+  const pdf = crearPdfEvaluacion(student, nie, materia, record, logoBase64, config);
+  pdf.documento.download(pdf.filename);
+}
+
+function prepararPdfEvaluacion(student, nie, materia, record, logoBase64, config) {
+  return new Promise((resolve, reject) => {
+    const timeoutId = window.setTimeout(() => {
+      reject(new Error('La preparación del PDF tardó demasiado.'));
+    }, 20000);
+    try {
+      const pdf = crearPdfEvaluacion(student, nie, materia, record, logoBase64, config);
+      pdf.documento.getBlob((blob) => {
+        window.clearTimeout(timeoutId);
+        resolve({ blob, filename: pdf.filename });
+      });
+    } catch (error) {
+      window.clearTimeout(timeoutId);
+      reject(error);
+    }
+  });
+}
+
+window.EvalPDF = {
+  generar: generarPdfEvaluacion,
+  preparar: prepararPdfEvaluacion,
+};
