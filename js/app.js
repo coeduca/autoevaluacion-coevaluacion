@@ -280,11 +280,31 @@
   const homeGrado = document.getElementById('home-grado');
   const cardAutoeval = document.getElementById('card-autoeval');
   const btnChangeStudent = document.getElementById('btn-change-student');
+  const homeAutoevalChip = document.getElementById('home-autoeval-chip');
+  const homeAutoevalDesc = document.getElementById('home-autoeval-desc');
+  const homeCoevalDesc = document.getElementById('home-coeval-desc');
+
+  function materiasDelEstudiante(studentValue) {
+    const configured = window.MATERIAS_POR_GRADO
+      && studentValue
+      && window.MATERIAS_POR_GRADO[studentValue.grade];
+    return configured && configured.length ? configured.slice() : window.MATERIAS.slice();
+  }
 
   function renderHome() {
     homeGreeting.textContent = `¡Hola, ${student.name.split(' ')[0]}!`;
     const periodoLabel = [window.CONFIG.periodo, window.CONFIG.anio].filter(Boolean).join(' · ');
     homeGrado.textContent = `${student.grade} · NIE ${nie}${periodoLabel ? ` · ${periodoLabel}` : ''}`;
+    const availableSubjects = materiasDelEstudiante(student);
+    if (availableSubjects.length === 1) {
+      homeAutoevalChip.textContent = 'Comenzar →';
+      homeAutoevalDesc.textContent = `Reflexiona con honestidad sobre tu desempeño en ${availableSubjects[0]}.`;
+      homeCoevalDesc.textContent = `Se activa automáticamente después de tu autoevaluación de ${availableSubjects[0]}.`;
+    } else {
+      homeAutoevalChip.textContent = 'Elegir materia →';
+      homeAutoevalDesc.textContent = 'Elige la materia y reflexiona con honestidad sobre tu propio desempeño.';
+      homeCoevalDesc.textContent = 'Se activa automáticamente después de tu autoevaluación de cada materia.';
+    }
     showView('home');
   }
 
@@ -330,7 +350,7 @@
   }
 
   function renderMateriaModal() {
-    materiaList.innerHTML = window.MATERIAS.map((m) => {
+    materiaList.innerHTML = materiasDelEstudiante(student).map((m) => {
       const rec = loadRecord(nie, m);
       const estado = materiaEstado(rec);
       const resetBtn = estado !== 'pendiente'
@@ -362,6 +382,11 @@
   }
 
   function openMateriaModal() {
+    const availableSubjects = materiasDelEstudiante(student);
+    if (availableSubjects.length === 1) {
+      onPickMateria(availableSubjects[0]);
+      return;
+    }
     renderMateriaModal();
     materiaModal.hidden = false;
   }
@@ -379,13 +404,16 @@
     record = rec;
     closeMateriaModal();
     if (estado === 'completado') {
+      setActiveNav('coeval');
       renderFinal();
       preparePdf(false);
       return;
     }
     if (record.autoeval) {
+      setActiveNav('coeval');
       openCoeval();
     } else {
+      setActiveNav('autoeval');
       openAutoeval();
     }
   }
@@ -749,7 +777,7 @@
 
       nie = saved.nie;
       student = window.STUDENTS[nie];
-      materia = window.MATERIAS.includes(saved.materia) ? saved.materia : null;
+      materia = materiasDelEstudiante(student).includes(saved.materia) ? saved.materia : null;
       nieModal.hidden = true;
 
       if (!materia) {

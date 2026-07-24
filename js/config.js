@@ -35,6 +35,16 @@ window.CONFIG = (function () {
 // Autoevaluación y coevaluación se completan por separado para cada una.
 window.MATERIAS = ['Inglés', 'Ciudadanía y Valores', 'Ciencias de la Computación'];
 
+// Materias que imparte el docente en cada grado. Los grados con una sola
+// materia entran directamente a la evaluación sin mostrar el selector.
+window.MATERIAS_POR_GRADO = {
+  'Séptimo': ['Inglés'],
+  'Octavo': ['Inglés', 'Ciudadanía y Valores'],
+  'Noveno': ['Inglés'],
+  'Primer Año de Bachillerato': ['Inglés'],
+  'Segundo Año de Bachillerato': ['Inglés', 'Ciencias de la Computación'],
+};
+
 // Autoevaluación y coevaluación se convierten CADA UNA a una nota
 // independiente de 1 a 10 — nunca se suman entre sí, porque pertenecen a
 // dos estudiantes distintos: la de autoevaluación es del propio estudiante
