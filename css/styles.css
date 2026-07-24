@@ -339,6 +339,13 @@ h1, h2, h3, .font-display { font-family: var(--font-display); }
 .info-hint-title { font-family: var(--font-display); font-weight: 700; color: var(--md-on-primary-container); }
 .info-hint-desc { font-size: .82rem; line-height: 1.4; color: var(--md-on-primary-container); opacity: .9; }
 
+.home-welcome {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.btn-compact { padding: .65rem 1rem; font-size: .82rem; }
 /* ---- Responsivo: ajustes para pantallas pequeñas ---- */
 @media (max-width: 860px) {
   .deco-books { top: 4.2rem; width: 40vw; opacity: .32; }
@@ -510,6 +517,34 @@ textarea.m3-field { resize: vertical; min-height: 5.5rem; line-height: 1.4; }
   margin-top: .4rem;
 }
 
+.student-preview {
+  padding: 1rem;
+  border-radius: var(--r-md);
+  background: var(--md-primary-container);
+  border: 1.5px solid rgba(2,132,199,.2);
+  text-align: left;
+}
+.student-preview-eyebrow {
+  margin-bottom: .2rem;
+  color: var(--md-primary);
+  font-size: .7rem;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+.student-preview-name {
+  color: var(--md-on-primary-container);
+  font-family: var(--font-display);
+  font-size: 1.08rem;
+  font-weight: 700;
+  line-height: 1.25;
+}
+.student-preview-grade {
+  margin: .2rem 0 .9rem;
+  color: var(--md-on-surface-variant);
+  font-size: .82rem;
+}
+
 /* ---------------------------------------------------------
    Diálogo modal (ingreso de NIE)
 --------------------------------------------------------- */
@@ -575,6 +610,15 @@ textarea.m3-field { resize: vertical; min-height: 5.5rem; line-height: 1.4; }
   border-radius: var(--r-pill);
   background: linear-gradient(90deg, var(--md-primary), var(--md-secondary));
   transition: width .3s ease;
+}
+.progress-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: .4rem;
+  color: var(--md-on-surface-variant);
+  font-size: .75rem;
+  font-weight: 600;
 }
 
 /* ---------------------------------------------------------
@@ -795,6 +839,25 @@ textarea.m3-field { resize: vertical; min-height: 5.5rem; line-height: 1.4; }
 .score-tile.final .score-tile-value,
 .score-tile.final .score-tile-label { color: #fff; }
 
+.download-status {
+  max-width: 32rem;
+  margin: 0 auto;
+  padding: .85rem 1rem;
+  border-radius: var(--r-md);
+  background: var(--md-primary-container);
+  color: var(--md-on-primary-container);
+  font-size: .84rem;
+  line-height: 1.4;
+}
+.download-status.ready {
+  background: var(--md-secondary-container);
+  color: var(--md-on-secondary-container);
+}
+.download-status.error {
+  background: var(--md-error-container);
+  color: var(--md-on-error-container);
+}
+
 /* ---------------------------------------------------------
    Utilidades de vista
 --------------------------------------------------------- */
@@ -814,6 +877,8 @@ textarea.m3-field { resize: vertical; min-height: 5.5rem; line-height: 1.4; }
 
 @media (max-width: 480px) {
   .rating-dot { width: 2.7rem; height: 2.7rem; font-size: 1rem; }
+  .home-welcome { align-items: flex-start; flex-direction: column; }
+  .btn-compact { width: 100%; }
 }
 
 /* ---------------------------------------------------------
