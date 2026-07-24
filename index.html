@@ -86,9 +86,12 @@
 
     <!-- ==================== VISTA: INICIO ==================== -->
     <div data-view="home" hidden class="space-y-6">
-      <div class="pt-2">
-        <h2 id="home-greeting" class="font-display text-2xl font-semibold"></h2>
-        <p id="home-grado" class="text-sm mt-1" style="color:var(--md-on-surface-variant)"></p>
+      <div class="pt-2 home-welcome">
+        <div>
+          <h2 id="home-greeting" class="font-display text-2xl font-semibold"></h2>
+          <p id="home-grado" class="text-sm mt-1" style="color:var(--md-on-surface-variant)"></p>
+        </div>
+        <button type="button" id="btn-change-student" class="btn btn-outlined btn-compact">Cambiar estudiante</button>
       </div>
 
       <div class="grid gap-4 sm:grid-cols-2">
@@ -118,7 +121,7 @@
         <img src="estadisticas.webp" alt="" class="info-hint-icon">
         <div>
           <p class="info-hint-title">¿Cómo funciona?</p>
-          <p class="info-hint-desc">Completa primero tu autoevaluación de una materia; luego se habilita la coevaluación de un compañero(a). Al terminar se descarga tu PDF para subirlo a Classroom.</p>
+          <p class="info-hint-desc">Completa primero tu autoevaluación de una materia; luego se habilita la coevaluación de un compañero(a). Al terminar se prepara tu PDF para subirlo a Classroom.</p>
         </div>
       </div>
     </div>
@@ -132,13 +135,17 @@
 
       <p id="autoeval-instrucciones" class="instrucciones-banner"></p>
 
-      <div class="m3-progress-track"><div id="autoeval-progress-fill" class="m3-progress-fill" style="width:0%"></div></div>
+      <div class="progress-head">
+        <span>Tu avance</span>
+        <span id="autoeval-progress-label">0 de 5 criterios</span>
+      </div>
+      <div class="m3-progress-track" role="progressbar" aria-label="Progreso de autoevaluación" aria-valuemin="0" aria-valuemax="5" aria-valuenow="0"><div id="autoeval-progress-fill" class="m3-progress-fill" style="width:0%"></div></div>
 
       <div id="autoeval-criterios" class="space-y-4"></div>
 
       <div class="criterio-card space-y-2">
         <label id="autoeval-reflexion-label" for="autoeval-reflexion" class="criterio-titulo block"></label>
-        <textarea id="autoeval-reflexion" class="m3-field" rows="3"></textarea>
+        <textarea id="autoeval-reflexion" class="m3-field" rows="3" maxlength="800"></textarea>
       </div>
 
       <p id="autoeval-error" class="field-error text-center" hidden></p>
@@ -170,19 +177,23 @@
           </div>
         </div>
 
-        <div class="m3-progress-track"><div id="coeval-progress-fill" class="m3-progress-fill" style="width:0%"></div></div>
+        <div class="progress-head">
+          <span>Tu avance</span>
+          <span id="coeval-progress-label">0 de 5 criterios</span>
+        </div>
+        <div class="m3-progress-track" role="progressbar" aria-label="Progreso de coevaluación" aria-valuemin="0" aria-valuemax="5" aria-valuenow="0"><div id="coeval-progress-fill" class="m3-progress-fill" style="width:0%"></div></div>
 
         <div id="coeval-criterios" class="space-y-4"></div>
 
         <div class="criterio-card space-y-2">
           <label id="coeval-comentario-label" for="coeval-comentario" class="criterio-titulo block"></label>
-          <textarea id="coeval-comentario" class="m3-field" rows="3"></textarea>
+          <textarea id="coeval-comentario" class="m3-field" rows="3" maxlength="800"></textarea>
         </div>
 
         <p id="coeval-error" class="field-error text-center" hidden></p>
 
         <div class="sticky-footer">
-          <button type="button" id="btn-coeval-submit" class="btn btn-filled btn-cta btn-block" disabled>Marcar como completada y descargar</button>
+          <button type="button" id="btn-coeval-submit" class="btn btn-filled btn-cta btn-block" disabled>Marcar como completada y preparar PDF</button>
         </div>
       </div>
     </div>
@@ -192,7 +203,7 @@
       <div class="done-badge">🎉</div>
       <div>
         <h2 class="font-display text-2xl font-semibold" style="color:var(--md-on-primary-container)">¡Listo!</h2>
-        <p class="text-sm mt-1" style="color:var(--md-on-surface-variant)">Tu autoevaluación y coevaluación quedaron registradas. El PDF se descargó automáticamente — súbelo a Classroom.</p>
+        <p class="text-sm mt-1" style="color:var(--md-on-surface-variant)">Tus respuestas quedaron guardadas. Estamos preparando el PDF para que puedas subirlo a Classroom.</p>
       </div>
 
       <div class="grid grid-cols-2 gap-3 max-w-md mx-auto">
@@ -207,9 +218,12 @@
       </div>
       <p class="text-xs" style="color:var(--md-on-surface-variant)">Cada nota es sobre 10 y pertenece a un estudiante distinto: la primera es tuya; la segunda es de tu compañero(a) evaluado — quedó en la 2.ª página del PDF.</p>
 
+      <div id="pdf-status" class="download-status" role="status" aria-live="polite">Preparando tu PDF…</div>
+
       <div class="flex flex-col sm:flex-row gap-3 justify-center pt-2">
-        <button type="button" id="btn-download-again" class="btn btn-filled">Descargar de nuevo</button>
-        <button type="button" data-nav="home" class="btn btn-outlined">Volver al inicio</button>
+        <button type="button" id="btn-download-again" class="btn btn-filled" disabled>Descargar PDF</button>
+        <a id="btn-open-pdf" class="btn btn-outlined" href="#" target="_blank" rel="noopener" hidden>Abrir PDF</a>
+        <button type="button" data-nav="home" class="btn btn-text">Volver al inicio</button>
       </div>
     </div>
 
@@ -223,12 +237,17 @@
   <div class="m3-dialog">
     <div class="done-badge" style="width:4rem;height:4rem;font-size:1.8rem;">👋</div>
     <h2 class="font-display text-xl font-semibold mt-4" style="color:var(--md-on-primary-container)">¡Bienvenido(a)!</h2>
-    <p class="text-sm mt-1 mb-5" style="color:var(--md-on-surface-variant)">Ingresa tu NIE para comenzar tu autoevaluación y coevaluación.</p>
+    <p class="text-sm mt-1 mb-5" style="color:var(--md-on-surface-variant)">Ingresa tu NIE y confirma que los datos mostrados sean tuyos.</p>
     <form id="nie-form" class="space-y-3">
       <label for="nie-input" class="sr-only">Tu NIE</label>
-      <input id="nie-input" type="text" inputmode="numeric" autocomplete="off" class="m3-field text-center" placeholder="Tu NIE" required>
+      <input id="nie-input" type="text" inputmode="numeric" autocomplete="off" class="m3-field text-center" placeholder="Tu NIE" aria-describedby="nie-error" required>
       <p id="nie-error" class="field-error" hidden></p>
-      <button type="submit" class="btn btn-filled btn-block">Continuar</button>
+      <div id="nie-student-preview" class="student-preview" role="status" aria-live="polite" hidden>
+        <p class="student-preview-eyebrow">Verifica que seas tú</p>
+        <p id="nie-preview-name" class="student-preview-name"></p>
+        <p id="nie-preview-grade" class="student-preview-grade"></p>
+        <button type="submit" id="btn-nie-enter" class="btn btn-filled btn-block">Sí, entrar a mis evaluaciones</button>
+      </div>
     </form>
   </div>
 </div>
